@@ -1,0 +1,200 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+#define MAX_PLAYERS 20 
+
+// Define the structure for a player
+struct Player {
+    int jerseyNumber;
+    std::string name;
+    int runs;
+    int wickets;
+    int matchesPlayed;
+};
+
+std::vector<Player> players; // Dynamic array to store players
+int playerCount = 0; // Count of players
+
+void addPlayer();
+void removePlayer();
+void searchPlayerByJerseyNumber();
+void searchPlayerByName();
+void updatePlayerData();
+void displayTop3PlayersByRuns();
+void displayAllPlayers();
+
+int main() {
+    int choice; 
+    do {
+        std::cout << "\n............Player Management System.............\n";
+        std::cout << "1. Add Player\n";
+        std::cout << "2. Remove Player\n";
+        std::cout << "3. Search Player by Jersey Number\n";
+        std::cout << "4. Search Player by Name\n";
+        std::cout << "5. Update Player Data\n";
+        std::cout << "6. Display Top 3 Players\n";
+        std::cout << "7. Display All Players\n";
+        std::cout << "8. Exit\n";
+        std::cout << "...............................................\n";
+        
+        std::cout << "\nEnter your choice: ";
+        std::cin >> choice;
+        
+        switch (choice) {
+            case 1: addPlayer(); break;
+            case 2: removePlayer(); break;
+            case 3: searchPlayerByJerseyNumber(); break;
+            case 4: searchPlayerByName(); break;
+            case 5: updatePlayerData(); break;
+            case 6: displayTop3PlayersByRuns(); break;
+            case 7: displayAllPlayers(); break;
+            case 8: 
+                std::cout << "Exiting the program.\n";
+                return 0;
+            default:
+                std::cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 8);
+}
+
+void addPlayer() {
+    if (playerCount < MAX_PLAYERS) {
+        Player newPlayer; 
+        std::cout << "\nEnter Jersey Number: ";
+        std::cin >> newPlayer.jerseyNumber;
+
+        std::cout << "Enter Player Name: ";
+        std::cin >> newPlayer.name;
+
+        std::cout << "Enter Runs: ";
+        std::cin >> newPlayer.runs;
+
+        std::cout << "Enter Wickets: ";
+        std::cin >> newPlayer.wickets;
+
+        std::cout << "Enter Matches Played: ";
+        std::cin >> newPlayer.matchesPlayed;
+
+        players.push_back(newPlayer); 
+        playerCount++; 
+        
+        std::cout << "\nPlayer added successfully.\n";
+    } else {
+        std::cout << "Maximum player limit reached. Cannot add more players.\n";
+    }
+}
+
+void removePlayer() {
+    int jerseyNumber;
+    std::cout << "Enter Jersey Number of the player to remove: ";
+    std::cin >> jerseyNumber;
+
+    auto it = std::remove_if(players.begin(), players.end(), [jerseyNumber](const Player& p) {
+        return p.jerseyNumber == jerseyNumber;
+    });
+
+    if (it != players.end()) {
+        players.erase(it, players.end());
+        playerCount--;
+        std::cout << "Player removed successfully.\n";
+    } else {
+        std::cout << "Player with Jersey Number " << jerseyNumber << " not found.\n";
+    }
+}
+
+void searchPlayerByJerseyNumber() {
+    int jerseyNumber;
+    std::cout << "Enter Jersey Number of the player to search: ";
+    std::cin >> jerseyNumber;
+
+    for (const auto& player : players) {
+        if (player.jerseyNumber == jerseyNumber) {
+            std::cout << "Jersey Number: " << player.jerseyNumber << "\n";
+            std::cout << "Player Name: " << player.name << "\n";
+            std::cout << "Runs: " << player.runs << "\n";
+            std::cout << "Wickets: " << player.wickets << "\n";
+            std::cout << "Matches Played: " << player.matchesPlayed << "\n";
+            return;
+        }
+    }
+    
+    std::cout << "Player with Jersey Number " << jerseyNumber << " not found.\n";
+}
+
+void searchPlayerByName() {
+    std::string playerName;
+    std::cout << "Enter Player Name to search: ";
+    std::cin >> playerName;
+
+    for (const auto& player : players) {
+        if (player.name == playerName) {
+            std::cout << "Jersey Number: " << player.jerseyNumber << "\n";
+            std::cout << "Player Name: " << player.name << "\n";
+            std::cout << "Runs: " << player.runs << "\n";
+            std::cout << "Wickets: " << player.wickets << "\n";
+            std::cout << "Matches Played: " << player.matchesPlayed << "\n";
+            return;
+        }
+    }
+
+    std::cout << "Player with name '" << playerName << "' not found.\n";
+}
+
+void updatePlayerData() {
+    int jerseyNumber;
+    std::cout << "Enter Jersey Number of the player to update: ";
+    std::cin >> jerseyNumber;
+
+    for (auto& player : players) {
+        if (player.jerseyNumber == jerseyNumber) {
+            std::cout << "Enter new Runs: ";
+            std::cin >> player.runs;
+
+            std::cout << "Enter new Wickets: ";
+            std::cin >> player.wickets;
+
+            std::cout << "Enter new Matches Played: ";
+            std::cin >> player.matchesPlayed;
+
+            std::cout << "Player data updated successfully.\n";
+            return;
+        }
+    }
+
+    std::cout << "Player with Jersey Number " << jerseyNumber << " not found.\n";
+}
+
+void displayTop3PlayersByRuns() {
+    // Sort players based on runs
+    sort(players.begin(), players.end(), [](const Player& a, const Player& b) {
+       return a.runs > b.runs; 
+    });
+
+    // Display the top 3 players by runs
+    std::cout << "Top 3 Players by Runs:\n";
+    
+    for (int i = 0; i < players.size() && i < 3; i++) { 
+        	std::cout<< i + 1<< ". "<< players[i].name <<" - Runs: "<<players[i].runs<<"\n"; 
+	}
+}
+
+void displayAllPlayers() {
+    if (players.empty()) {
+     	std:: cout<<"No Players Available."<<std ::endl ;
+     	return ;
+	}
+    
+	std :: cout<<"All Players:\n";	
+	for (int i = 0; i < players.size(); i++) {
+	    const auto& player = players[i];
+	   	std :: cout<<"\n...................Player "<<i+1<<"....................\n";	
+	   	std :: cout<<"Jersey Number: "<<player.jerseyNumber<<"\n";	
+	   	std :: cout<<"Player Name: "<<player.name<<"\n";	
+	   	std :: cout<<"Runs: "<<player.runs<<"\n";	
+	   	std :: cout<<"Wickets: "<<player.wickets<<"\n";	
+	   	std :: cout<<"Matches Played: "<<player.matchesPlayed<<"\n";	
+	   	std :: cout<<".................................................\n";	
+	}
+}
